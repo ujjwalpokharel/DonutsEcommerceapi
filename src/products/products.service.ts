@@ -4,9 +4,8 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import * as AWS from 'aws-sdk';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
 import { Op } from 'sequelize';
 import { Category } from 'src/category/entities/category.entity';
 import { ProductSliderImage } from 'src/product-slider-image/entities/product-slider-image.entity';
@@ -40,22 +39,6 @@ export class ProductsService {
     fs.writeFileSync(imagePath, dataBuffer);
 
     const imageUrl = `http://localhost:3001/imageUploads/${imagePath}`;
-
-    // AWS.config.update({
-    //   accessKeyId: process.env.ACCESS_KEY_ID,
-    //   secretAccessKey: process.env.SECRET_ACCESS_KEY,
-    // });
-    // const s3 = new AWS.S3();
-    // const key = `${timeStamp}-${imagename}`;
-
-    // const s3Response = await s3
-    //   .upload({
-    //     Bucket: process.env.BUCKET_NAME,
-    //     Body: dataBuffer,
-    //     Key: key,
-    //   })
-    //   .promise();
-
     const productData = { ...createProductDto, image:imageUrl};
     const product = await this.productModel.create(productData);
     if (
@@ -113,33 +96,18 @@ export class ProductsService {
     imagename,
   ): Promise<Product> {
     const timeStamp = Date.now();
-    // const directoryName = path.join(
-    //   __dirname,
-    //   '..',
-    //   '..',
-    //   '..',
-    //   'imageUploads',
-    // );
-    // const imageFileName = `${timeStamp}-${imagename}`;
-    // const imagePath = path.join(directoryName, imageFileName);
-    // fs.writeFileSync(imagePath, dataBuffer);
-    // const imageUrl = `http://localhost:3001/imageUploads/${imagename}`;
-
-    AWS.config.update({
-      accessKeyId: process.env.ACCESS_KEY_ID,
-      secretAccessKey: process.env.SECRET_ACCESS_KEY,
-    });
-    const s3 = new AWS.S3();
-    const key = `${timeStamp}-${imagename}`;
-
-    const s3Response = await s3
-      .upload({
-        Bucket: process.env.BUCKET_NAME,
-        Body: dataBuffer,
-        Key: key,
-      })
-      .promise();
-    const productData = { ...updateProductDto, image: s3Response.Location };
+    const directoryName = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'imageUploads',
+    );
+    const imageFileName = `${timeStamp}-${imagename}`;
+    const imagePath = path.join(directoryName, imageFileName);
+    fs.writeFileSync(imagePath, dataBuffer);
+    const imageUrl = `http://localhost:3001/imageUploads/${imagename}`;
+    const productData = { ...updateProductDto, image: imageUrl };
     const product = await this.productModel.findOne({
       where: { id },
     });

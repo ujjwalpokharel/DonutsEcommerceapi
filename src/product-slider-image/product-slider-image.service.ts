@@ -4,7 +4,8 @@ import { UpdateProductSliderImageDto } from './dto/update-product-slider-image.d
 import { PRODUCT_IMAGE_SLIDER } from 'utils/constants';
 import { ProductSliderImage } from './entities/product-slider-image.entity';
 import * as AWS from 'aws-sdk';
-
+import * as path from 'path';
+import * as fs from 'fs';
 @Injectable()
 export class ProductSliderImageService {
   constructor(
@@ -17,22 +18,21 @@ export class ProductSliderImageService {
     imagename: string,
   ) {
     const timeStamp = Date.now();
-    AWS.config.update({
-      accessKeyId: process.env.ACCESS_KEY_ID,
-      secretAccessKey: process.env.SECRET_ACCESS_KEY,
-    });
-    const s3 = new AWS.S3();
-    const key = `${timeStamp}-${imagename}`;
-    const s3Response = await s3
-      .upload({
-        Bucket: process.env.BUCKET_NAME,
-        Body: dataBuffer,
-        Key: key,
-      })
-      .promise();
+    const directoryName = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'imageUploads',
+    );
+    const imageFileName = `${timeStamp}-${imagename}`;
+    const imagePath = path.join(directoryName, imageFileName);
+    fs.writeFileSync(imagePath, dataBuffer);
+
+    const imageUrl = `http://localhost:3001/imageUploads/${imagePath}`;
     const sliderData = {
       ...createProductSliderImageDto,
-      image: s3Response.Location,
+      image: imageUrl,
     };
     const sliderImage = await this.sliderModel.create(sliderData);
     return sliderImage;
@@ -74,19 +74,7 @@ export class ProductSliderImageService {
         `image with id${id} don't exists so can't be deleted`,
       );
     }
-    const imageUrl = singleImage.image;
-    const imageKey = imageUrl.split('/').pop(); 
-    AWS.config.update({
-      accessKeyId: process.env.ACCESS_KEY_ID,
-      secretAccessKey: process.env.SECRET_ACCESS_KEY,
-    });
-    const s3 = new AWS.S3();
-    await s3
-    .deleteObject({
-      Bucket: process.env.BUCKET_NAME,
-      Key: imageKey,
-    })
-    .promise();
+
     await this.sliderModel.destroy({ where: { id } });
     return `Image deleted successfully`;
   }
