@@ -1,21 +1,20 @@
 import {
-  PrimaryKey,
-  ForeignKey,
-  Column,
-  Model,
-  Table,
   AutoIncrement,
-  DataType,
   BelongsTo,
-  HasMany,
   BelongsToMany,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Model,
+  PrimaryKey,
+  Table,
 } from 'sequelize-typescript';
-import { User } from '../../users/entities/user.entity';
-import { Product } from 'src/products/entities/product.entity';
+import { Customer } from 'src/customer/entities/customer.entity';
 import { OrderProduct } from 'src/order-product/entities/order-product.entity';
 import { Payment } from 'src/payments/entities/payment.entity';
-import { Customer } from 'src/customer/entities/customer.entity';
-import { databaseNameString } from 'aws-sdk/clients/glue';
+import { Product } from 'src/products/entities/product.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Table({
   tableName: 'orders',

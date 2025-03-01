@@ -13,6 +13,7 @@ import { ProductSliderImageModule } from './product-slider-image/product-slider-
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import { CustomerModule } from './customer/customer.module';
+import { AdminsModule } from './admins/admins.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CustomerModule } from './customer/customer.module';
     PaymentsModule,
     AuthModule,
     CustomerModule,
+    AdminsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

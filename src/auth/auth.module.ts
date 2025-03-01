@@ -10,10 +10,12 @@ import { User } from 'src/users/entities/user.entity';
 import { PassportModule } from '@nestjs/passport';
 import { userProvider } from 'src/users/user.provider';
 import { ConfigModule } from '@nestjs/config';
+import { AdminsModule } from 'src/admins/admins.module';
+import { adminProvider } from 'src/admins/admins.provider';
 
 @Module({
   imports: [
-    UsersModule,
+    AdminsModule,
     PassportModule,
     ConfigModule.forRoot(),
     JwtModule.register({
@@ -23,6 +25,6 @@ import { ConfigModule } from '@nestjs/config';
     SequelizeModule.forFeature([User]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, ...userProvider],
+  providers: [AuthService, LocalStrategy, JwtStrategy, ...adminProvider],
 })
 export class AuthModule {}

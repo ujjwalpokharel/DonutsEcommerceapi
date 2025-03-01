@@ -1,11 +1,10 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
+import { PRODUCT_IMAGE_SLIDER } from 'utils/constants';
 import { CreateProductSliderImageDto } from './dto/create-product-slider-image.dto';
 import { UpdateProductSliderImageDto } from './dto/update-product-slider-image.dto';
-import { PRODUCT_IMAGE_SLIDER } from 'utils/constants';
 import { ProductSliderImage } from './entities/product-slider-image.entity';
-import * as AWS from 'aws-sdk';
-import * as path from 'path';
-import * as fs from 'fs';
 @Injectable()
 export class ProductSliderImageService {
   constructor(
